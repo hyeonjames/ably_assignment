@@ -1,5 +1,6 @@
 # 실행방법
 ```bash
+./gradlew build
 docker-compose up
 ```
 
