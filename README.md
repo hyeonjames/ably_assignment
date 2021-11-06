@@ -44,9 +44,8 @@ curl -XPOST http://localhost:8080/api/v1/mobile/verify -H 'Content-Type: applica
   --data '{"forSignUp": false, "token": "000000", "mobile":"010-0000-0000"}'
 # {"ok":true,"data":true,"error":null}
 
-curl -XPOST http://localhost:8080/api/v1/users/change/password -H 'Content-Type: application/json'\
-  -H 'X-AUTH-TOKEN:eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNjM2MjEwNjkzLCJleHAiOjE2MzYyMTQyOTN9.QE8ck2E5CJV8GcRfMA7i84NeLpVn7Oauf2uN1HWnrSc'  \
-  --data '{"oldPassword": "abcd123$", "newPassword": "abcd234$"}'
+curl -XPOST http://localhost:8080/api/v1/auth/change/password -H 'Content-Type: application/json'\
+  --data '{"email": "abc@gmail.com", "mobile":"010-0000-0000", "newPassword": "abcd234$"}'
 # {"ok":true,"data":true,"error":null}
 ```
 

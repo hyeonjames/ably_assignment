@@ -15,9 +15,4 @@ class UserController (
     @GetMapping("/me")
     fun me(): Response<UserDTO> = Response.ok(userService.getCurrentUser())
 
-    @PostMapping("/change/password")
-    fun changePassword(@Valid @RequestBody passwordChangeDTO: PasswordChangeDTO): Response<Boolean> {
-        userService.passwordChange(passwordChangeDTO)
-        return Response.ok(true)
-    }
 }

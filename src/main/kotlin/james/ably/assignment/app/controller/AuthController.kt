@@ -32,4 +32,10 @@ class AuthController (
         return Response.ok(true)
     }
 
+
+    @PostMapping("/change/password")
+    fun changePassword(@Valid @RequestBody passwordChangeDTO: PasswordChangeDTO): Response<Boolean> {
+        authService.passwordChange(passwordChangeDTO)
+        return Response.ok(true)
+    }
 }

@@ -1,10 +1,9 @@
 package james.ably.assignment.app.service
 
+import james.ably.assignment.app.dto.PasswordChangeDTO
 import james.ably.assignment.app.dto.SignInDTO
 import james.ably.assignment.app.dto.SignUpDTO
-import james.ably.assignment.app.exception.AlreadySignedUpException
-import james.ably.assignment.app.exception.PasswordInvalidException
-import james.ably.assignment.app.exception.UserNotFoundException
+import james.ably.assignment.app.exception.*
 import james.ably.assignment.app.model.User
 import james.ably.assignment.app.repository.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -14,7 +13,8 @@ import org.springframework.stereotype.Service
 class AuthService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider,
+    private val mobileVerifyService: MobileVerifyService
 ) {
     fun signin(request: SignInDTO): String {
         val user = userRepository.findByEmail(request.email) ?: throw UserNotFoundException("해당 하는 이메일로 가입한 유저 정보를 찾을 수 없습니다.")
@@ -40,6 +40,18 @@ class AuthService(
                 mobile = mobile
             )
         }
+        userRepository.save(user)
+    }
+
+    fun passwordChange(passwordChangeDTO: PasswordChangeDTO) {
+        val user = userRepository.findByEmail(passwordChangeDTO.email) ?: throw UserNotFoundException("해당 하는 이메일로 가입한 유저 정보를 찾을 수 없습니다.")
+        if (passwordChangeDTO.mobile != user.mobile) {
+            throw MobileNotMatchedException("전화번호가 올바르지 않습니다.")
+        }
+        if (!mobileVerifyService.isVerified(false, passwordChangeDTO.mobile)) {
+            throw MobileNotVerifiedException("전화번호 인증이 필요합니다.")
+        }
+        user.encPassword = passwordEncoder.encode(passwordChangeDTO.newPassword)
         userRepository.save(user)
     }
 }
